@@ -1,3 +1,6 @@
+import com.sun.org.apache.xpath.internal.SourceTree;
+
+import javax.sound.midi.Soundbank;
 import java.util.*;
 
 class Main {
@@ -160,8 +163,7 @@ class Main {
         }
 
         Node start = new Node(0, matriz);
-        answer = aStar(start);
-        System.out.print(answer);
+        System.out.printf("%d\n", aStar(start));
     }
 }
 
@@ -205,16 +207,28 @@ class Heuristics {
         vetor[14] = matriz[2][2];
         vetor[15] = matriz[2][1];
 
-        for(int i = 0; i < 15; i++){
+        /* HF:
+         *  Mudei o jeito de correr o vetor
+         *  Ao inves de olhar pro elemento da frente vou olhando para o de tras
+         *  Acredito que o problema era o algoritmo que estava errado
+         */
+        for(int i = 1; i < 16; i++){
 
-            if((vetor[i]+1 != vetor[i+1]) && (vetor[i+1] != 0) && (vetor[i] != 0)){
+            if((vetor[i] != vetor[i-1] + 1) && (vetor[i] != 0) && (vetor[i-1] != 0)){
                 counter++;
             }
-            if(vetor[i+1] == 0){
-                if(vetor[i]+1 != vetor[i+1]){
+            /*
+             * So uma duvida pq vc esta fazendo isso aki?
+             */
+            if(vetor[i] != 0){
+                if(vetor[i] != vetor[i-1] + 1){
                     counter++;
                 }
             }
+            /*
+             * Como meu codigo perdeu para isso aqui????????
+
+             */
         }
         return counter;
     }
@@ -279,7 +293,7 @@ class Node implements Comparable<Node> {
     public Node(int g, byte matriz[][]){
         this.g = g;
         this.matriz = matriz;
-        this.h = Heuristics.h3(matriz);
+        this.h = Heuristics.h2(matriz);
         this.f = g + h;
     }
 
